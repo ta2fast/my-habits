@@ -43,15 +43,6 @@
         .active-text { color: white !important; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
         .scroll-area { overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; }
         .scroll-area::-webkit-scrollbar { display: none; }
-        /* 編集ボタンのスタイル */
-        .edit-trigger { 
-            position: absolute; top: -4px; right: -4px; 
-            background: white; border: 1px solid rgba(0,0,0,0.1); 
-            width: 24px; height: 24px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 20;
-        }
-        .dark .edit-trigger { background: #1e293b; border-color: rgba(255,255,255,0.1); color: white; }
     </style>
 </head>
 <body class="transition-colors duration-300">
@@ -78,7 +69,7 @@
                         <span id="themeIcon">☀️</span> <span id="themeName">ライト</span>
                     </button>
                 </div>
-                <div id="habitButtons" class="grid grid-cols-4 gap-3 px-1"></div>
+                <div id="habitButtons" class="grid grid-cols-4 gap-3"></div>
             </section>
 
             <section class="p-4 bg-black/5 dark:bg-slate-800/50 rounded-3xl border border-black/5 mb-6">
@@ -134,10 +125,10 @@
         let currentDisplayDate = new Date();
         let statsMode = 'month';
         let currentTheme = localStorage.getItem('theme-mode') || 'light';
-        const STORAGE_KEY_HABITS = 'habits_pwa_v2';
-        const STORAGE_KEY_LOGS = 'logs_pwa_v2';
+        const STORAGE_KEY_HABITS = 'habits_pwa_v3';
+        const STORAGE_KEY_LOGS = 'logs_pwa_v3';
         const BASIC_COLORS = ['#ef4444', '#f97316', '#f59e0b', '#84cc16', '#10b981', '#06b6d4', '#3b82f6', '#6366f1', '#8b5cf6', '#d946ef', '#ec4899', '#64748b'];
-        const ICON_LIST = ["❤️","💖","✨","💪","🏃","🧘","📚","✍️","💻","🔥","🥦","💧","🛏️","💊","🛀","🧹","🌿","💰","🎨","🎹","🐶","🍎","🚶","🚲","☀️","🌙","⚽","🏀","🎸","🎮","🍵","☕","🍚","🍱","🧼","🧖","🚭","🧠","💤","🙌","🎯","⏰"];
+        const ICON_LIST = ["❤️","💖","✨","💪","🏃","🧘","📚","✍️","💻","🔥","🥦","💧","🛏️","💊","🛀","🧹","🌿","💰","🎨","🎹","🐶","🍎","🚶","🚲","☀️","🌙","⚽","🏀","ギター","🎮","🍵","☕","🍚","🍱","🧼","🧖","🚭","🧠","💤","🙌","🎯","⏰"];
 
         let habits = JSON.parse(localStorage.getItem(STORAGE_KEY_HABITS)) || [
             { id: 0, name: '筋トレ', color: '#3b82f6', icon: '💪' },
@@ -184,11 +175,16 @@
                     logs[k].forEach(id => { if(counts.hasOwnProperty(id)) counts[id]++; });
                 }
             });
+
             const container = document.getElementById('statsContainer'); container.innerHTML = '';
             habits.forEach(habit => {
                 const c = counts[habit.id] || 0, p = targetDays > 0 ? Math.round((c / targetDays) * 100) : 0;
-                container.innerHTML += `<div class="p-3 bg-white dark:bg-slate-900 rounded-2xl border border-black/5">
-                    <div class="flex items-center gap-1.5 mb-1"><span class="text-base">${habit.icon}</span><span class="text-[11px] font-black opacity-60 truncate">${habit.name}</span></div>
+                container.innerHTML += `
+                <div class="p-3 bg-white dark:bg-slate-900 rounded-2xl border border-black/5 relative group">
+                    <button onclick="openHabitEdit(${habit.id})" class="absolute top-2 right-2 p-1.5 bg-black/5 dark:bg-white/5 rounded-lg opacity-40 active:opacity-100">
+                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path></svg>
+                    </button>
+                    <div class="flex items-center gap-1.5 mb-1"><span class="text-base">${habit.icon}</span><span class="text-[11px] font-black opacity-60 truncate pr-4">${habit.name}</span></div>
                     <div class="text-2xl font-black italic" style="color: ${habit.color}">${p}%</div>
                     <div class="text-[10px] font-bold opacity-30 mt-0.5">${c}日 / ${targetDays}日</div>
                 </div>`;
@@ -203,10 +199,7 @@
             container.innerHTML = '';
             habits.forEach(habit => {
                 const isDone = logs[key]?.includes(habit.id);
-                container.innerHTML += `<div class="flex flex-col items-center relative">
-                    <button onclick="openHabitEdit(${habit.id})" class="edit-trigger">
-                        <svg class="w-3 h-3 opacity-60" fill="currentColor" viewBox="0 0 20 20"><path d="M11.414 2.343a2 2 0 112.828 2.828L11.828 7.586 9 4.758l2.414-2.415zM4 13.172V16h2.828l8.38-8.379-2.83-2.828L4 13.172z"></path></svg>
-                    </button>
+                container.innerHTML += `<div class="flex flex-col items-center">
                     <button onclick="toggleHabit(${habit.id})"
                         class="w-full aspect-square rounded-full flex items-center justify-center transition-all ${isDone ? 'shadow-lg scale-95' : 'bg-black/5 dark:bg-white/5'}" 
                         style="background-color: ${isDone ? habit.color : ''}">
@@ -282,7 +275,7 @@
             habits.forEach(h => {
                 const done = logs[key]?.includes(h.id);
                 const btn = document.createElement('button');
-                btn.className = `w-full py-3 px-5 rounded-xl font-black text-xs flex justify-between items-center ${done ? 'text-white shadow-md' : 'bg-black/5 dark:bg-slate-800 opacity-40'}`;
+                btn.className = `w-full py-3 px-5 rounded-xl font-black text-xs flex justify-between items-center ${done ? 'text-white' : 'bg-black/5 dark:bg-slate-800 opacity-40'}`;
                 if (done) btn.style.backgroundColor = h.color;
                 btn.onclick = () => {
                     if (!logs[key]) logs[key] = [];
