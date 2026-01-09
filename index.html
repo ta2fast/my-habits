@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="ja" class="h-full">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -9,10 +8,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="apple-touch-icon" href="icon.png">
-
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
+        tailwind.config = { 
             darkMode: 'class',
             theme: {
                 extend: {
@@ -27,143 +25,49 @@
         }
     </script>
     <style>
-        :root {
-            --app-height: 100vh;
-        }
-
-        html,
-        body {
-            height: 100vh;
-            height: var(--app-height);
-            overflow: hidden;
-            overscroll-behavior: none;
-        }
-
-        .theme-sky body {
-            background-color: #f0f9ff;
-            color: #075985;
-        }
-
-        .theme-sakura body {
-            background-color: #fff1f2;
-            color: #9f1239;
-        }
-
-        .theme-forest body {
-            background-color: #f0fdf4;
-            color: #166534;
-        }
-
-        .theme-mimosa body {
-            background-color: #fffbeb;
-            color: #92400e;
-        }
-
-        .main-container {
-            background-color: white;
-            transition: background-color 0.3s;
-        }
-
-        .dark .main-container {
-            background-color: #0f172a;
-            color: #f8fafc;
-        }
-
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-        }
-
-        .day-cell {
-            position: relative;
-            background-color: rgba(0, 0, 0, 0.04);
-            border-radius: 6px;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            aspect-ratio: 1/1;
-        }
-
-        .dark .day-cell {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
-
-        .habit-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        .habit-quadrant {
-            opacity: 0;
-            transition: opacity 0.15s;
-        }
-
-        .habit-quadrant.active {
-            opacity: 1;
-        }
-
-        .day-number {
-            position: absolute;
-            z-index: 10;
-            font-size: 0.85rem;
-            font-weight: 900;
-            pointer-events: none;
-        }
-
-        .active-text {
-            color: white !important;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-        }
-
-        .scroll-area {
-            overflow-y: auto;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-        }
-
-        .scroll-area::-webkit-scrollbar {
-            display: none;
-        }
+        :root { --app-height: 100vh; }
+        html, body { height: 100vh; height: var(--app-height); overflow: hidden; overscroll-behavior: none; }
+        .theme-sky body { background-color: #f0f9ff; color: #075985; }
+        .theme-sakura body { background-color: #fff1f2; color: #9f1239; }
+        .theme-forest body { background-color: #f0fdf4; color: #166534; }
+        .theme-mimosa body { background-color: #fffbeb; color: #92400e; }
+        .main-container { background-color: white; transition: background-color 0.3s; }
+        .dark .main-container { background-color: #0f172a; color: #f8fafc; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+        .day-cell { position: relative; background-color: rgba(0,0,0,0.04); border-radius: 6px; overflow: hidden; display: flex; align-items: center; justify-content: center; aspect-ratio: 1/1; }
+        .dark .day-cell { background-color: rgba(255,255,255,0.05); }
+        .habit-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+        .habit-quadrant { opacity: 0; transition: opacity 0.15s; }
+        .habit-quadrant.active { opacity: 1; }
+        .day-number { position: absolute; z-index: 10; font-size: 0.85rem; font-weight: 900; pointer-events: none; }
+        .active-text { color: white !important; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+        .scroll-area { overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; }
+        .scroll-area::-webkit-scrollbar { display: none; }
     </style>
 </head>
-
 <body class="transition-colors duration-300">
+
     <div class="max-w-md mx-auto h-full flex flex-col main-container shadow-2xl relative">
         <header class="flex justify-between items-center px-4 py-2 shrink-0 border-b dark:border-slate-800">
-            <button onclick="changeMonth(-1)" class="p-2 active:bg-black/5 rounded-full"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-width="3" d="M15 19l-7-7 7-7" />
-                </svg></button>
+            <button onclick="changeMonth(-1)" class="p-2 active:bg-black/5 rounded-full"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" d="M15 19l-7-7 7-7"/></svg></button>
             <h1 class="text-lg font-black tracking-tighter" id="monthLabel">2026年 1月</h1>
-            <button onclick="changeMonth(1)" class="p-2 active:bg-black/5 rounded-full"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-width="3" d="M9 5l7 7-7 7" />
-                </svg></button>
+            <button onclick="changeMonth(1)" class="p-2 active:bg-black/5 rounded-full"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" d="M9 5l7 7-7 7"/></svg></button>
         </header>
 
         <main class="flex-grow scroll-area flex flex-col px-4 py-3">
             <section class="mb-4">
                 <div class="calendar-grid text-center text-[10px] font-black opacity-30 mb-1">
-                    <div class="text-red-500">日</div>
-                    <div>月</div>
-                    <div>火</div>
-                    <div>水</div>
-                    <div>木</div>
-                    <div>金</div>
-                    <div class="text-blue-500">土</div>
+                    <div class="text-red-500">日</div><div>月</div><div>火</div><div>水</div><div>木</div><div>金</div><div class="text-blue-500">土</div>
                 </div>
                 <div id="calendarDays" class="calendar-grid"></div>
             </section>
 
             <section class="mb-4">
                 <div class="flex justify-between items-center mb-3">
-                    <h2 class="text-xs font-black opacity-60 tracking-wider">今日の記録</h2>
+                    <div class="flex items-center gap-2">
+                        <h2 class="text-xs font-black opacity-60 tracking-wider">今日の記録</h2>
+                        <span class="text-[8px] px-2 py-0.5 bg-black/5 dark:bg-white/10 rounded-full opacity-40">2回タップで編集</span>
+                    </div>
                     <button onclick="nextTheme()" class="text-[10px] font-black flex items-center gap-1.5 bg-black/5 dark:bg-white/10 px-3 py-1.5 rounded-full active:scale-95 transition-all">
                         <span id="themeIcon">☀️</span> <span id="themeName">ライト</span>
                     </button>
@@ -186,11 +90,23 @@
             <div class="bg-white dark:bg-slate-900 w-full max-w-xs rounded-3xl p-5 shadow-2xl">
                 <h3 class="font-black text-base mb-4 text-center">習慣の編集</h3>
                 <div class="space-y-4 max-h-[70vh] overflow-y-auto px-1 scroll-area">
-                    <input id="editHabitName" type="text" class="w-full p-3 bg-slate-100 dark:bg-slate-800 rounded-xl font-bold text-sm" placeholder="習慣の名前">
-                    <div id="iconSelector" class="grid grid-cols-6 gap-2 bg-slate-50 dark:bg-slate-800 p-2 rounded-xl border border-black/5"></div>
-                    <div id="colorPalette" class="grid grid-cols-6 gap-2"></div>
+                    <div>
+                        <label class="text-[10px] font-black opacity-40 ml-1">習慣の名前</label>
+                        <input id="editHabitName" type="text" class="w-full mt-1 p-3 bg-slate-100 dark:bg-slate-800 rounded-xl font-bold text-sm" placeholder="習慣の名前">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black opacity-40 ml-1">アイコンを選択</label>
+                        <div id="iconSelector" class="grid grid-cols-6 gap-2 bg-slate-50 dark:bg-slate-800 p-2 rounded-xl border border-black/5 mt-1"></div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-black opacity-40 ml-1">カラーを選択</label>
+                        <div id="colorPalette" class="grid grid-cols-6 gap-2 mt-1"></div>
+                    </div>
                 </div>
-                <button onclick="saveHabitEdit()" class="w-full mt-6 py-3.5 bg-blue-600 text-white font-black rounded-xl text-sm">保存する</button>
+                <div class="flex gap-2 mt-6">
+                    <button onclick="closeHabitModal()" class="flex-1 py-3.5 bg-slate-100 dark:bg-slate-800 font-black rounded-xl text-sm">キャンセル</button>
+                    <button onclick="saveHabitEdit()" class="flex-[2] py-3.5 bg-blue-600 text-white font-black rounded-xl text-sm">保存する</button>
+                </div>
             </div>
         </div>
 
@@ -204,10 +120,7 @@
     </div>
 
     <script>
-        // Service Workerの登録（オフライン対応）
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
-        }
+        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
 
         const appHeight = () => document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
         window.addEventListener('resize', appHeight); appHeight();
@@ -215,10 +128,10 @@
         let currentDisplayDate = new Date();
         let statsMode = 'month';
         let currentTheme = localStorage.getItem('theme-mode') || 'light';
-        const STORAGE_KEY_HABITS = 'habits_final';
-        const STORAGE_KEY_LOGS = 'logs_final';
+        const STORAGE_KEY_HABITS = 'habits_pwa_v1';
+        const STORAGE_KEY_LOGS = 'logs_pwa_v1';
         const BASIC_COLORS = ['#ef4444', '#f97316', '#f59e0b', '#84cc16', '#10b981', '#06b6d4', '#3b82f6', '#6366f1', '#8b5cf6', '#d946ef', '#ec4899', '#64748b'];
-        const ICON_LIST = ["❤️", "💖", "✨", "💪", "🏃", "🧘", "📚", "✍️", "💻", "🔥", "🥦", "💧", "🛏️", "💊", "🛀", "🧹", "🌿", "💰", "🎨", "🎹", "🐶", "🍎", "🚶", "🚲", "☀️", "🌙", "⚽", "🏀", "🎸", "🎮", "🍵", "☕", "🍚", "🍱", "🧼", "🧖", "🚭", "🧠", "💤", "🙌", "🎯", "⏰"];
+        const ICON_LIST = ["❤️","💖","✨","💪","🏃","🧘","📚","✍️","💻","🔥","🥦","💧","🛏️","💊","🛀","🧹","🌿","💰","🎨","🎹","🐶","🍎","🚶","🚲","☀️","🌙","⚽","🏀","🎸","🎮","🍵","☕","🍚","🍱","🧼","🧖","🚭","🧠","💤","🙌","🎯","⏰"];
 
         let habits = JSON.parse(localStorage.getItem(STORAGE_KEY_HABITS)) || [
             { id: 0, name: '筋トレ', color: '#3b82f6', icon: '💪' },
@@ -228,6 +141,21 @@
         ];
         let logs = JSON.parse(localStorage.getItem(STORAGE_KEY_LOGS)) || {};
         let editingHabitId = null, tempSelectedColor = '', tempSelectedIcon = '';
+
+        // 操作性のためのダブルクリック/長押し処理
+        let lastTap = 0;
+        function handleHabitTap(id) {
+            const now = Date.now();
+            const DOUBLE_TAP_DELAY = 300;
+            if (now - lastTap < DOUBLE_TAP_DELAY) {
+                // ダブルタップされたら編集を開く
+                openHabitEdit(id);
+            } else {
+                // シングルタップなら記録
+                toggleHabit(id);
+            }
+            lastTap = now;
+        }
 
         function applyTheme() {
             const el = document.documentElement;
@@ -262,12 +190,9 @@
             Object.keys(logs).forEach(k => {
                 const [ky, km] = k.split('-').map(Number);
                 if (statsMode === 'month' ? (ky === y && km === m) : (ky === y)) {
-                    logs[k].forEach(id => { if (counts.hasOwnProperty(id)) counts[id]++; });
+                    logs[k].forEach(id => { if(counts.hasOwnProperty(id)) counts[id]++; });
                 }
             });
-            const isM = statsMode === 'month';
-            document.getElementById('btnMonth').className = `px-6 py-1.5 rounded-lg text-xs font-black transition-all ${isM ? 'bg-white dark:bg-slate-900 shadow-sm text-blue-600' : 'opacity-40'}`;
-            document.getElementById('btnYear').className = `px-6 py-1.5 rounded-lg text-xs font-black transition-all ${!isM ? 'bg-white dark:bg-slate-900 shadow-sm text-blue-600' : 'opacity-40'}`;
             const container = document.getElementById('statsContainer'); container.innerHTML = '';
             habits.forEach(habit => {
                 const c = counts[habit.id] || 0, p = targetDays > 0 ? Math.round((c / targetDays) * 100) : 0;
@@ -277,6 +202,10 @@
                     <div class="text-[10px] font-bold opacity-30 mt-0.5">${c}日 / ${targetDays}日</div>
                 </div>`;
             });
+            document.getElementById('btnMonth').classList.toggle('bg-white', statsMode === 'month');
+            document.getElementById('btnMonth').classList.toggle('dark:bg-slate-900', statsMode === 'month');
+            document.getElementById('btnYear').classList.toggle('bg-white', statsMode === 'year');
+            document.getElementById('btnYear').classList.toggle('dark:bg-slate-900', statsMode === 'year');
         }
 
         function renderHabitButtons() {
@@ -285,8 +214,8 @@
             container.innerHTML = '';
             habits.forEach(habit => {
                 const isDone = logs[key]?.includes(habit.id);
-                container.innerHTML += `<div class="flex flex-col items-center">
-                    <button onclick="toggleHabit(${habit.id})" oncontextmenu="event.preventDefault(); openHabitEdit(${habit.id})" 
+                container.innerHTML += `<div class="flex flex-col items-center relative">
+                    <button onclick="handleHabitTap(${habit.id})"
                         class="w-full aspect-square rounded-full flex items-center justify-center transition-all ${isDone ? 'shadow-lg scale-95' : 'bg-black/5 dark:bg-white/5'}" 
                         style="background-color: ${isDone ? habit.color : ''}">
                         <span class="text-2xl" style="filter: grayscale(${isDone ? 0 : 0.4});">${habit.icon}</span>
@@ -331,7 +260,7 @@
             const container = document.getElementById('iconSelector'); container.innerHTML = '';
             ICON_LIST.forEach(icon => {
                 const btn = document.createElement('button');
-                btn.className = `p-2 text-xl rounded-lg ${tempSelectedIcon === icon ? 'bg-blue-500 text-white scale-110' : 'hover:bg-black/5 dark:hover:bg-white/5'}`;
+                btn.className = `p-2 text-xl rounded-lg ${tempSelectedIcon === icon ? 'bg-blue-500 text-white' : 'bg-black/5 dark:bg-white/5'}`;
                 btn.innerText = icon; btn.onclick = () => { tempSelectedIcon = icon; renderIconSelector(); };
                 container.appendChild(btn);
             });
@@ -351,16 +280,17 @@
             const h = habits.find(x => x.id === editingHabitId);
             h.name = document.getElementById('editHabitName').value || h.name;
             h.icon = tempSelectedIcon; h.color = tempSelectedColor;
-            document.getElementById('habitEditModal').classList.add('hidden'); saveData();
+            closeHabitModal(); saveData();
         }
 
+        function closeHabitModal() { document.getElementById('habitEditModal').classList.add('hidden'); }
         function openEditModal(key) {
             document.getElementById('modalDateLabel').innerText = key.replace(/-/g, ' / ');
             const grid = document.getElementById('modalHabitGrid'); grid.innerHTML = '';
             habits.forEach(h => {
                 const done = logs[key]?.includes(h.id);
                 const btn = document.createElement('button');
-                btn.className = `w-full py-3 px-5 rounded-xl font-black text-xs flex justify-between items-center transition-all ${done ? 'text-white shadow-md' : 'bg-black/5 dark:bg-slate-800 opacity-40'}`;
+                btn.className = `w-full py-3 px-5 rounded-xl font-black text-xs flex justify-between items-center ${done ? 'text-white' : 'bg-black/5 dark:bg-slate-800 opacity-40'}`;
                 if (done) btn.style.backgroundColor = h.color;
                 btn.onclick = () => {
                     if (!logs[key]) logs[key] = [];
@@ -381,5 +311,4 @@
         applyTheme(); renderAll();
     </script>
 </body>
-
 </html>
