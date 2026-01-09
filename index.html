@@ -43,6 +43,15 @@
         .active-text { color: white !important; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
         .scroll-area { overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; }
         .scroll-area::-webkit-scrollbar { display: none; }
+        /* 編集ボタンのスタイル */
+        .edit-trigger { 
+            position: absolute; top: -4px; right: -4px; 
+            background: white; border: 1px solid rgba(0,0,0,0.1); 
+            width: 24px; height: 24px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 20;
+        }
+        .dark .edit-trigger { background: #1e293b; border-color: rgba(255,255,255,0.1); color: white; }
     </style>
 </head>
 <body class="transition-colors duration-300">
@@ -64,15 +73,12 @@
 
             <section class="mb-4">
                 <div class="flex justify-between items-center mb-3">
-                    <div class="flex items-center gap-2">
-                        <h2 class="text-xs font-black opacity-60 tracking-wider">今日の記録</h2>
-                        <span class="text-[8px] px-2 py-0.5 bg-black/5 dark:bg-white/10 rounded-full opacity-40">2回タップで編集</span>
-                    </div>
+                    <h2 class="text-xs font-black opacity-60 tracking-wider">今日の記録</h2>
                     <button onclick="nextTheme()" class="text-[10px] font-black flex items-center gap-1.5 bg-black/5 dark:bg-white/10 px-3 py-1.5 rounded-full active:scale-95 transition-all">
                         <span id="themeIcon">☀️</span> <span id="themeName">ライト</span>
                     </button>
                 </div>
-                <div id="habitButtons" class="grid grid-cols-4 gap-3"></div>
+                <div id="habitButtons" class="grid grid-cols-4 gap-3 px-1"></div>
             </section>
 
             <section class="p-4 bg-black/5 dark:bg-slate-800/50 rounded-3xl border border-black/5 mb-6">
@@ -95,16 +101,16 @@
                         <input id="editHabitName" type="text" class="w-full mt-1 p-3 bg-slate-100 dark:bg-slate-800 rounded-xl font-bold text-sm" placeholder="習慣の名前">
                     </div>
                     <div>
-                        <label class="text-[10px] font-black opacity-40 ml-1">アイコンを選択</label>
+                        <label class="text-[10px] font-black opacity-40 ml-1">アイコン</label>
                         <div id="iconSelector" class="grid grid-cols-6 gap-2 bg-slate-50 dark:bg-slate-800 p-2 rounded-xl border border-black/5 mt-1"></div>
                     </div>
                     <div>
-                        <label class="text-[10px] font-black opacity-40 ml-1">カラーを選択</label>
+                        <label class="text-[10px] font-black opacity-40 ml-1">カラー</label>
                         <div id="colorPalette" class="grid grid-cols-6 gap-2 mt-1"></div>
                     </div>
                 </div>
                 <div class="flex gap-2 mt-6">
-                    <button onclick="closeHabitModal()" class="flex-1 py-3.5 bg-slate-100 dark:bg-slate-800 font-black rounded-xl text-sm">キャンセル</button>
+                    <button onclick="closeHabitModal()" class="flex-1 py-3.5 bg-slate-100 dark:bg-slate-800 font-black rounded-xl text-sm">戻る</button>
                     <button onclick="saveHabitEdit()" class="flex-[2] py-3.5 bg-blue-600 text-white font-black rounded-xl text-sm">保存する</button>
                 </div>
             </div>
@@ -128,8 +134,8 @@
         let currentDisplayDate = new Date();
         let statsMode = 'month';
         let currentTheme = localStorage.getItem('theme-mode') || 'light';
-        const STORAGE_KEY_HABITS = 'habits_pwa_v1';
-        const STORAGE_KEY_LOGS = 'logs_pwa_v1';
+        const STORAGE_KEY_HABITS = 'habits_pwa_v2';
+        const STORAGE_KEY_LOGS = 'logs_pwa_v2';
         const BASIC_COLORS = ['#ef4444', '#f97316', '#f59e0b', '#84cc16', '#10b981', '#06b6d4', '#3b82f6', '#6366f1', '#8b5cf6', '#d946ef', '#ec4899', '#64748b'];
         const ICON_LIST = ["❤️","💖","✨","💪","🏃","🧘","📚","✍️","💻","🔥","🥦","💧","🛏️","💊","🛀","🧹","🌿","💰","🎨","🎹","🐶","🍎","🚶","🚲","☀️","🌙","⚽","🏀","🎸","🎮","🍵","☕","🍚","🍱","🧼","🧖","🚭","🧠","💤","🙌","🎯","⏰"];
 
@@ -141,21 +147,6 @@
         ];
         let logs = JSON.parse(localStorage.getItem(STORAGE_KEY_LOGS)) || {};
         let editingHabitId = null, tempSelectedColor = '', tempSelectedIcon = '';
-
-        // 操作性のためのダブルクリック/長押し処理
-        let lastTap = 0;
-        function handleHabitTap(id) {
-            const now = Date.now();
-            const DOUBLE_TAP_DELAY = 300;
-            if (now - lastTap < DOUBLE_TAP_DELAY) {
-                // ダブルタップされたら編集を開く
-                openHabitEdit(id);
-            } else {
-                // シングルタップなら記録
-                toggleHabit(id);
-            }
-            lastTap = now;
-        }
 
         function applyTheme() {
             const el = document.documentElement;
@@ -202,10 +193,8 @@
                     <div class="text-[10px] font-bold opacity-30 mt-0.5">${c}日 / ${targetDays}日</div>
                 </div>`;
             });
-            document.getElementById('btnMonth').classList.toggle('bg-white', statsMode === 'month');
-            document.getElementById('btnMonth').classList.toggle('dark:bg-slate-900', statsMode === 'month');
-            document.getElementById('btnYear').classList.toggle('bg-white', statsMode === 'year');
-            document.getElementById('btnYear').classList.toggle('dark:bg-slate-900', statsMode === 'year');
+            document.getElementById('btnMonth').className = `px-6 py-1.5 rounded-lg text-xs font-black transition-all ${statsMode === 'month' ? 'bg-white dark:bg-slate-900 shadow-sm text-blue-600' : 'opacity-40'}`;
+            document.getElementById('btnYear').className = `px-6 py-1.5 rounded-lg text-xs font-black transition-all ${statsMode === 'year' ? 'bg-white dark:bg-slate-900 shadow-sm text-blue-600' : 'opacity-40'}`;
         }
 
         function renderHabitButtons() {
@@ -215,7 +204,10 @@
             habits.forEach(habit => {
                 const isDone = logs[key]?.includes(habit.id);
                 container.innerHTML += `<div class="flex flex-col items-center relative">
-                    <button onclick="handleHabitTap(${habit.id})"
+                    <button onclick="openHabitEdit(${habit.id})" class="edit-trigger">
+                        <svg class="w-3 h-3 opacity-60" fill="currentColor" viewBox="0 0 20 20"><path d="M11.414 2.343a2 2 0 112.828 2.828L11.828 7.586 9 4.758l2.414-2.415zM4 13.172V16h2.828l8.38-8.379-2.83-2.828L4 13.172z"></path></svg>
+                    </button>
+                    <button onclick="toggleHabit(${habit.id})"
                         class="w-full aspect-square rounded-full flex items-center justify-center transition-all ${isDone ? 'shadow-lg scale-95' : 'bg-black/5 dark:bg-white/5'}" 
                         style="background-color: ${isDone ? habit.color : ''}">
                         <span class="text-2xl" style="filter: grayscale(${isDone ? 0 : 0.4});">${habit.icon}</span>
@@ -260,7 +252,7 @@
             const container = document.getElementById('iconSelector'); container.innerHTML = '';
             ICON_LIST.forEach(icon => {
                 const btn = document.createElement('button');
-                btn.className = `p-2 text-xl rounded-lg ${tempSelectedIcon === icon ? 'bg-blue-500 text-white' : 'bg-black/5 dark:bg-white/5'}`;
+                btn.className = `p-2 text-xl rounded-lg ${tempSelectedIcon === icon ? 'bg-blue-500 text-white' : 'hover:bg-black/5 dark:hover:bg-white/5'}`;
                 btn.innerText = icon; btn.onclick = () => { tempSelectedIcon = icon; renderIconSelector(); };
                 container.appendChild(btn);
             });
@@ -290,7 +282,7 @@
             habits.forEach(h => {
                 const done = logs[key]?.includes(h.id);
                 const btn = document.createElement('button');
-                btn.className = `w-full py-3 px-5 rounded-xl font-black text-xs flex justify-between items-center ${done ? 'text-white' : 'bg-black/5 dark:bg-slate-800 opacity-40'}`;
+                btn.className = `w-full py-3 px-5 rounded-xl font-black text-xs flex justify-between items-center ${done ? 'text-white shadow-md' : 'bg-black/5 dark:bg-slate-800 opacity-40'}`;
                 if (done) btn.style.backgroundColor = h.color;
                 btn.onclick = () => {
                     if (!logs[key]) logs[key] = [];
